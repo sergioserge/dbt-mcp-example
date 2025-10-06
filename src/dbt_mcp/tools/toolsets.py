@@ -42,6 +42,7 @@ toolsets = {
         ToolName.RUN,
         ToolName.TEST,
         ToolName.SHOW,
+        ToolName.READ_FILE,
     },
     Toolset.ADMIN_API: {
         ToolName.LIST_JOBS,

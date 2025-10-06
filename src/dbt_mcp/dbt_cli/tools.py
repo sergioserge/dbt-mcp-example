@@ -176,6 +176,30 @@ def create_dbt_cli_tool_definitions(config: DbtCliConfig) -> list[ToolDefinition
         args.extend(["--output", "json"])
         return _run_dbt_command(args)
 
+    def read_file(
+        file_path: str = Field(description="Path to the file to read, relative to the dbt project directory")
+    ) -> str:
+        """Read the contents of a file in the dbt project."""
+        import os
+        from pathlib import Path
+        
+        # Get the full path relative to the project directory
+        full_path = Path(config.project_dir) / file_path
+        
+        try:
+            if not full_path.exists():
+                return f"Error: File not found: {file_path}"
+            
+            if not full_path.is_file():
+                return f"Error: Path is not a file: {file_path}"
+            
+            # Read the file content
+            content = full_path.read_text(encoding='utf-8')
+            return content
+            
+        except Exception as e:
+            return f"Error reading file {file_path}: {str(e)}"
+
     return [
         ToolDefinition(
             fn=build,
@@ -253,6 +277,16 @@ def create_dbt_cli_tool_definitions(config: DbtCliConfig) -> list[ToolDefinition
             description=get_prompt("dbt_cli/show"),
             annotations=create_tool_annotations(
                 title="dbt show",
+                read_only_hint=True,
+                destructive_hint=False,
+                idempotent_hint=True,
+            ),
+        ),
+        ToolDefinition(
+            fn=read_file,
+            description="Read the contents of a file in the dbt project directory",
+            annotations=create_tool_annotations(
+                title="Read File",
                 read_only_hint=True,
                 destructive_hint=False,
                 idempotent_hint=True,
