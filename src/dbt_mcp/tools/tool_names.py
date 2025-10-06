@@ -18,6 +18,7 @@ class ToolName(Enum):
     RUN = "run"
     TEST = "test"
     SHOW = "show"
+    READ_FILE = "read_file"
 
     # Semantic Layer tools
     LIST_METRICS = "list_metrics"
